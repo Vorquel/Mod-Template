@@ -1,0 +1,36 @@
+ext {
+  author = 'Vorquel'
+  modsHome = 'file:../1.7.10/'
+}
+
+tasks.addRule("Pattern: startMod<ModId>") { String taskName ->
+  if(taskName.startsWith("startMod")) {
+    task(taskName, type:Copy) {
+      def modId = taskName - 'startMod'
+      def modName = project.hasProperty('modName') ?
+                    modName :
+                    Character.toUpperCase(modId.charAt(0)).toString() +
+                    modId.substring(1).replaceAll('([a-z])([A-Z])', '$1 $2')
+      doFirst {
+        println 'Creating mod workspace for ' + modName
+        if(modId.equals(''))
+          throw new RuntimeException('ModId cannot be empty')
+      }
+      doLast {
+        File file = new File(modsHome - 'file:' + modName + '/gitignore.txt')
+        file.renameTo(modsHome - 'file:' + modName + '/.gitignore')
+      }
+      from('file:./') {
+        include 'gradle/**'
+        include 'gradlew.bat'
+      }
+      from('file:template') {
+        expand 'modId':modId, 
+               'modIdLower':modId.toLowerCase(),
+               'modName':modName,
+               'author':author
+      }
+      into(modsHome + modName)
+    }
+  } 
+}

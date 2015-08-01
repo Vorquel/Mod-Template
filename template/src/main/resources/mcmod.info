@@ -1,0 +1,21 @@
+[
+{
+  "modid": "$modId",
+  "name": "derp", //todo: Mod Name Here 
+  "description": "Some mod I made",
+  "version": "\${modVersion}",
+  "mcversion": "\${mcVersion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": [
+    "Vorquel"
+  ],
+  "credits": "Thanks to all my fans and sponsors.",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent": "",
+  "dependencies": [
+  ]
+}
+]
