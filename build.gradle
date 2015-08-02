@@ -7,30 +7,50 @@ tasks.addRule("Pattern: startMod<ModId>") { String taskName ->
   if(taskName.startsWith("startMod")) {
     task(taskName, type:Copy) {
       def modId = taskName - 'startMod'
+      def modIdLower = modId.toLowerCase()
       def modName = project.hasProperty('modName') ?
                     modName :
                     Character.toUpperCase(modId.charAt(0)).toString() +
                     modId.substring(1).replaceAll('([a-z])([A-Z])', '$1 $2')
       doFirst {
         println 'Creating mod workspace for ' + modName
+
+        //to prevent the travesty of an empty folder name
         if(modId.equals(''))
           throw new RuntimeException('ModId cannot be empty')
       }
+      //because rename() doesn't work on .gitignore or folders
       doLast {
-        File file = new File(modsHome - 'file:' + modName + '/gitignore.txt')
-        file.renameTo(modsHome - 'file:' + modName + '/.gitignore')
+        def fileHome = modsHome - 'file:'
+
+        File file = new File("$fileHome$modName/gitignore.txt")
+        file.renameTo("$fileHome$modName/.gitignore")
+
+        def modMiddle = '/src/main/java'
+
+        file = new File("$fileHome$modName$modMiddle/author/mod/modid")
+        file.renameTo("$fileHome$modName$modMiddle/author/mod/$modIdLower")
+
+        file = new File("$fileHome$modName$modMiddle/author")
+        file.renameTo("$fileHome$modName$modMiddle/${author.toLowerCase()}")
+
+        def assetsMiddle = '/src/main/resources/assets'
+
+        file = new File("$fileHome$modName$assetsMiddle/modid")
+        file.renameTo("$fileHome$modName$assetsMiddle/$modIdLower")
       }
       from('file:./') {
         include 'gradle/**'
         include 'gradlew.bat'
       }
       from('file:template') {
-        expand 'modId':modId, 
-               'modIdLower':modId.toLowerCase(),
+        rename('ModId(.*)', "$modId\$1")
+        expand 'modId':modId,
+               'modIdLower':modIdLower,
                'modName':modName,
                'author':author
       }
       into(modsHome + modName)
     }
-  } 
+  }
 }
