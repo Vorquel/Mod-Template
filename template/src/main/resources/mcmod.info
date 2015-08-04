@@ -1,14 +1,14 @@
 [
 {
   "modid": "$modId",
-  "name": "derp", //todo: Mod Name Here 
-  "description": "Some mod I made",
+  "name": "$modName",
+  "description": "A mod by ${author}",
   "version": "\${modVersion}",
   "mcversion": "\${mcVersion}",
   "url": "",
   "updateUrl": "",
   "authorList": [
-    "Vorquel"
+    "$author"
   ],
   "credits": "Thanks to all my fans and sponsors.",
   "logoFile": "",
